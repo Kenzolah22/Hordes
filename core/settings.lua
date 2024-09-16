@@ -9,6 +9,8 @@ local settings = {
     selected_chest_type = nil,
     failover_chest_type = nil,
     greater_affix_count = 0,
+    amulet_greater_affix_count = 0,
+    amulet_affix_salvage_count = 0,
 }
 
 function settings:update_settings()
@@ -31,6 +33,8 @@ function settings:update_settings()
     settings.use_salvage_filter_toggle = gui.elements.use_salvage_filter_toggle:get()
     settings.affix_salvage_count = gui.elements.affix_salvage_count:get()
     settings.greater_affix_count = gui.elements.greater_affix_count:get()
+    settings.amulet_greater_affix_count = gui.elements.amulet_greater_affix_count:get()
+    settings.amulet_affix_salvage_count = gui.elements.amulet_affix_salvage_count:get()
 end
 
 return settings

@@ -33,37 +33,47 @@ local function salvage_low_greater_affix_items()
             end
 
             local skin_name = inventory_item:get_name()
-            local display_name = inventory_item:get_display_name()
-            local greater_affix_count = utils.get_greater_affix_count(display_name)
             
-            -- Greater Affix check
-            local passes_greater_affix_check = settings.greater_affix_count == 0 or greater_affix_count >= settings.greater_affix_count
+            -- Check if the item is an amulet
+            if skin_name:match("Amulet") then
+                if affix_filter:check_amulet_affixes(inventory_item) then
+                    tracker.keep_items = tracker.keep_items + 1
+                    goto continue
+                end
+            else
+                -- Existing logic for other items
+                local display_name = inventory_item:get_display_name()
+                local greater_affix_count = utils.get_greater_affix_count(display_name)
+                
+                -- Greater Affix check
+                local passes_greater_affix_check = settings.greater_affix_count == 0 or greater_affix_count >= settings.greater_affix_count
 
-            -- Only proceed to check item affixes if Greater Affix check passes and not junk
-            if passes_greater_affix_check and not inventory_item:is_junk() then
-                local filter_table = affix_filter:get_filter(skin_name)
-            
-                if filter_table then
-                    local item_affixes = inventory_item:get_affixes()
+                -- Only proceed to check item affixes if Greater Affix check passes and not junk
+                if passes_greater_affix_check and not inventory_item:is_junk() then
+                    local filter_table = affix_filter:get_filter(skin_name)
+                
+                    if filter_table then
+                        local item_affixes = inventory_item:get_affixes()
 
-                    if #item_affixes > 2 then
-                        local found_affixes = 0
+                        if #item_affixes > 2 then
+                            local found_affixes = 0
 
-                        for _, affix in pairs(item_affixes) do
-                            if affix then
-                                for _, filter_entry in pairs(filter_table) do
-                                    if filter_entry.sno_id == affix.affix_name_hash then
-                                        found_affixes = found_affixes + 1
-                                        break
+                            for _, affix in pairs(item_affixes) do
+                                if affix then
+                                    for _, filter_entry in pairs(filter_table) do
+                                        if filter_entry.sno_id == affix.affix_name_hash then
+                                            found_affixes = found_affixes + 1
+                                            break
+                                        end
                                     end
                                 end
                             end
-                        end
 
-                        if found_affixes >= settings.affix_salvage_count then
-                            -- Keep item only if both Greater Affix and item affix conditions are met
-                            tracker.keep_items = tracker.keep_items + 1
-                            goto continue
+                            if found_affixes >= settings.affix_salvage_count then
+                                -- Keep item only if both Greater Affix and item affix conditions are met
+                                tracker.keep_items = tracker.keep_items + 1
+                                goto continue
+                            end
                         end
                     end
                 end

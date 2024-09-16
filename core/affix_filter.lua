@@ -37,6 +37,41 @@ local filter_lookup = {
     return nil
 end
 
+function affix_filter:check_amulet_affixes(item)
+    local skin_name = item:get_name()
+    local display_name = item:get_display_name()
+    local greater_affix_count = utils.get_greater_affix_count(display_name)
+    
+    -- Amulet-specific Greater Affix check
+    local passes_greater_affix_check = settings.amulet_greater_affix_count == 0 or greater_affix_count >= settings.amulet_greater_affix_count
+
+    if passes_greater_affix_check and not item:is_junk() then
+        local filter_table = self:get_filter(skin_name)
+        
+        if filter_table then
+            local item_affixes = item:get_affixes()
+            local found_affixes = 0
+
+            for _, affix in pairs(item_affixes) do
+                if affix then
+                    for _, filter_entry in pairs(filter_table) do
+                        if filter_entry.sno_id == affix.affix_name_hash then
+                            found_affixes = found_affixes + 1
+                            break
+                        end
+                    end
+                end
+            end
+
+            if found_affixes >= settings.amulet_affix_salvage_count then
+                return true -- Keep the amulet
+            end
+        end
+    end
+
+    return false -- Salvage the amulet
+end
+
 local uber_table = {
     { name = "Tyrael's Might", sno = 1901484 },
     { name = "The Grandfather", sno = 223271 },

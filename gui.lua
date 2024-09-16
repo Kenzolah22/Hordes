@@ -44,6 +44,8 @@ gui.elements = {
     use_salvage_filter_toggle = checkbox:new(false, get_hash("use_salvage_filter_toggle")),
     greater_affix_count = slider_int:new(0, 3, 0, get_hash("greater_affix_count")), -- 0 is the default value
     affix_salvage_count = slider_int:new(1, 3, 1, get_hash("affix_salvage_count")), -- 1 is a default value
+    amulet_greater_affix_count = slider_int:new(0, 3, 0, get_hash("amulet_greater_affix_count")),
+    amulet_affix_salvage_count = slider_int:new(1, 3, 1, get_hash("amulet_affix_salvage_count")),
     movement_spell_to_objective = checkbox:new(false, get_hash("movement_spell_to_objective")),
     use_evade_as_movement_spell = checkbox:new(false, get_hash("use_evade_as_movement_spell")),
 }
@@ -70,8 +72,10 @@ function gui.render()
             if gui.elements.salvage_toggle:get() and gui.elements.use_salvage_filter_toggle:get() then
                 gui.elements.greater_affix_count:render("Min Greater Affixes to Keep", "Select minimum number of Greater Affixes to keep an item (0-3, 0 = off)")
                 gui.elements.affix_salvage_count:render("Min No. affixes to keep", "Minimum number of matching affixes to keep")
+                gui.elements.amulet_greater_affix_count:render("Amulet Min Greater Affixes to Keep", "Select minimum number of Greater Affixes to keep an amulet (0-3, 0 = off)")
+                gui.elements.amulet_affix_salvage_count:render("Amulet Min No. affixes to keep", "Minimum number of matching affixes to keep for amulets")
             end
-        end
+        end  -- Add this line to close the if gui.elements.salvage_toggle:get() block
         -- Updated chest type selector to use the new enum structure
         gui.elements.chest_type_selector:render("Chest Type", gui.chest_types_options, "Select the type of chest to open")
         if not gui.elements.salvage_toggle:get() then
